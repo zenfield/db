@@ -395,7 +395,7 @@ public class MysqlDialect implements Dialect {
 					"--password=" + environment.getPassword(),
 					environment.getDatabase(),
 					"-Ne",
-					"\"" + query + "\"");
+					query);
 		}
 	}
 }
