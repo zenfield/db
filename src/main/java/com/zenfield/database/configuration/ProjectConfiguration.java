@@ -37,16 +37,14 @@ import java.util.Map;
  */
 public class ProjectConfiguration {
 
-	public static final String FILENAME = ".project";
+	private static final String FILENAME = ".db";
 
-	public static final String KEY_NAME = "name";
-	public static final String KEY_CREATE = "database.create";
-	public static final String KEY_POPULATE = "database.populate";
-	public static final String KEY_DIALECT = "database.dialect";
+	private static final String KEY_NAME = "name";
+	private static final String KEY_CREATE = "database.create";
+	private static final String KEY_POPULATE = "database.populate";
+	private static final String KEY_DIALECT = "database.dialect";
 
-	public static final String KEY_HOOK_POST_FETCH = "database.post-fetch";
-
-	public static int SPACING_TAB = -1;
+	private static final String KEY_HOOK_POST_FETCH = "database.post-fetch";
 
 	// project
 	private final String name;
