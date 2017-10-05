@@ -45,6 +45,7 @@ public class ProjectConfiguration {
 	private static final String KEY_DIALECT = "database.dialect";
 
 	private static final String KEY_HOOK_POST_FETCH = "database.post-fetch";
+	private static final String KEY_HOOK_POST_CLEAR = "database.post-clear";
 
 	// project
 	private final String name;
@@ -54,13 +55,15 @@ public class ProjectConfiguration {
 	private final File populate;
 	private final Dialect dialect;
 	private final File postFetch;
+	private final File postClear;
 
-	private ProjectConfiguration(String name, File create, File populate, Dialect dialect, File postFetch) {
+	private ProjectConfiguration(String name, File create, File populate, Dialect dialect, File postFetch, File postClear) {
 		this.name = name;
 		this.create = create;
 		this.populate = populate;
 		this.dialect = dialect;
 		this.postFetch = postFetch;
+		this.postClear = postClear;
 	}
 
 	public String getName() {
@@ -81,6 +84,10 @@ public class ProjectConfiguration {
 
 	public File getPostFetch() {
 		return postFetch;
+	}
+
+	public File getPostClear() {
+		return postClear;
 	}
 
 	public static ProjectConfiguration load() {
@@ -105,7 +112,8 @@ public class ProjectConfiguration {
 					getCreate(file, map),
 					getPopulate(file, map),
 					getDialect(map),
-					getHook(file, KEY_HOOK_POST_FETCH, map)
+					getHook(file, KEY_HOOK_POST_FETCH, map),
+					getHook(file, KEY_HOOK_POST_CLEAR, map)
 			);
 
 		} catch (InvalidConfigurationException e) {

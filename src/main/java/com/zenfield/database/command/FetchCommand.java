@@ -82,6 +82,8 @@ public class FetchCommand extends AbstractCommand {
 				return false;
 			}
 
+			executeHook("post-clear", getConfiguration().getPostClear(), destination);
+
 			if (!getDialect().execute(destination, tmp)) {
 				System.err.println("Database load failed");
 				return false;
