@@ -34,6 +34,7 @@ import com.zenfield.database.command.DumpCommand;
 import com.zenfield.database.command.FetchCommand;
 import com.zenfield.database.command.PopulateCommand;
 import com.zenfield.database.command.InfoCommand;
+import com.zenfield.database.command.LoadCommand;
 import com.zenfield.database.command.StoreCommand;
 import com.zenfield.database.configuration.Parameters;
 
@@ -53,6 +54,9 @@ public class DatabaseTool {
 			+ "\n"
 			+ "  dump <environment>\n"
 			+ "  - dumps the database\n"
+			+ "\n"
+			+ "  load <file>\n"
+			+ "  - clear the database and loads the file\n"
 			+ "\n"
 			+ "  clear <environment>\n"
 			+ "  - clears the database\n"
@@ -207,6 +211,16 @@ public class DatabaseTool {
 						}
 
 						return new DumpCommand(configuration, parameters, remote);
+
+					default:
+						System.err.println(HELP);
+						return null;
+				}
+
+			case "load":
+				switch (parameters.countArguments()) {
+					case 1:
+						return new LoadCommand(configuration, parameters, parameters.getArgument(0));
 
 					default:
 						System.err.println(HELP);

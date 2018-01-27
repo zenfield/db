@@ -58,6 +58,12 @@ public class ClearCommand extends AbstractCommand {
 			return false;
 		}
 
-		return getDialect().clear(destination);
+		if (!getDialect().clear(destination)) {
+			return false;
+		}
+
+		executeHook("post-clear", getConfiguration().getPostClear(), destination);
+
+		return true;
 	}
 }

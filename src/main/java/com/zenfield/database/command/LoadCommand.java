@@ -23,26 +23,25 @@ package com.zenfield.database.command;
 
 import com.zenfield.core.Check;
 import com.zenfield.core.Exceptions;
-import com.zenfield.core.Files;
 import com.zenfield.database.configuration.Environment;
 import com.zenfield.database.configuration.Parameters;
 import com.zenfield.database.configuration.ProjectConfiguration;
 import com.zenfield.database.configuration.ReadOnly;
 import java.io.File;
-import java.io.IOException;
 
 /**
  *
  * @author MICSKO Viktor (viktor@zenfield.com)
  */
-public class FetchCommand extends AbstractCommand {
+public class LoadCommand extends AbstractCommand {
 
-	private final Environment source;
+	private final String path;
 
-	public FetchCommand(ProjectConfiguration configuration, Parameters parameters, Environment source) {
+	public LoadCommand(ProjectConfiguration configuration, Parameters parameters, String path) {
 		super(configuration, parameters);
-		Check.notNull(source);
-		this.source = source;
+
+		Check.notEmpty(path);
+		this.path = path;
 	}
 
 	@Override
@@ -54,13 +53,24 @@ public class FetchCommand extends AbstractCommand {
 	public boolean run(Environment destination) {
 		Check.notNull(destination);
 
-		if (source.same(destination)) {
-			System.err.println("Cannot fetch: source must be different from destination");
+		File file = new File(path);
+		if (!file.exists()) {
+			System.err.println("Cannot load: file not found at " + path);
+			return false;
+		}
+
+		if (!file.canRead()) {
+			System.err.println("Cannot load: cannot read file at " + path);
+			return false;
+		}
+
+		if (file.isDirectory()) {
+			System.err.println("Cannot load: " + path + " is a directory");
 			return false;
 		}
 
 		if (destination.getReadOnly() == ReadOnly.TRUE) {
-			System.err.println("Cannot fetch: destination is read-only");
+			System.err.println("Cannot load: destination is read-only");
 			return false;
 		}
 
@@ -68,40 +78,27 @@ public class FetchCommand extends AbstractCommand {
 			return false;
 		}
 
-		File tmp = null;
-
 		try {
-			tmp = File.createTempFile("db-", ".sql");
-			if (!getDialect().dump(source, tmp)) {
-				System.err.println("Database dump failed");
-				return false;
-			}
-
 			if (!getDialect().clear(destination)) {
-				System.err.println("Cannot clear the database before fetch");
+				System.err.println("Cannot clear the database before load");
 				return false;
 			}
 
 			executeHook("post-clear", getConfiguration().getPostClear(), destination);
 
-			if (!getDialect().execute(destination, tmp)) {
+			if (!getDialect().execute(destination, file)) {
 				System.err.println("Database load failed");
 				return false;
 			}
 
-			executeHook("post-fetch", getConfiguration().getPostFetch(), destination);
-
-			System.err.println("Database fetch done");
+			System.err.println("Database loaded from " + path);
 			return true;
 
-		} catch (IOException e) {
-			System.err.println("Error while fetching a database");
+		} catch (Exception e) {
+			System.err.println("Error while loading from " + path);
 			System.err.println();
 			Exceptions.print(e, System.err);
 			return false;
-
-		} finally {
-			Files.delete(tmp);
 		}
 	}
 }
