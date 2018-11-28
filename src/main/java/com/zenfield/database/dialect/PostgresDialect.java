@@ -199,6 +199,7 @@ public class PostgresDialect implements Dialect {
 						"ssh", "-C", environment.getSshUsernameHostname(),
 						"PGPASSWORD=" + environment.getPassword(),
 						"psql",
+						"-q",
 						"-wU", environment.getUsername(),
 						"-h", environment.getHostname(),
 						environment.getDatabase(),
@@ -208,6 +209,7 @@ public class PostgresDialect implements Dialect {
 			} else {
 				builder = new ProcessBuilder(
 						"psql",
+						"-q",
 						"-wU", environment.getUsername(),
 						"-h", environment.getHostname(),
 						environment.getDatabase(),
@@ -427,6 +429,7 @@ public class PostgresDialect implements Dialect {
 					"ssh", "-C", environment.getSshUsernameHostname(),
 					"PGPASSWORD=" + environment.getPassword(),
 					"psql",
+					"-q",
 					"-wU", environment.getUsername(),
 					"-h", environment.getHostname(),
 					environment.getDatabase(),
@@ -436,6 +439,7 @@ public class PostgresDialect implements Dialect {
 		} else {
 			ProcessBuilder builder = new ProcessBuilder(
 					"psql",
+					"-q",
 					"-wU", environment.getUsername(),
 					"-h", environment.getHostname(),
 					environment.getDatabase(),
