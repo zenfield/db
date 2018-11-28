@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author MICSKO Viktor (viktor@zenfield.com)
  */
 public class PostgresDialect implements Dialect {
@@ -152,11 +151,7 @@ public class PostgresDialect implements Dialect {
 				return false;
 			}
 
-			if (Lists.isEmpty(result)) {
-				return false;
-			}
-
-			for (String line : result) {
+			for (String line : Lists.safe(result)) {
 				System.out.println(line);
 			}
 
@@ -199,7 +194,6 @@ public class PostgresDialect implements Dialect {
 						"ssh", "-C", environment.getSshUsernameHostname(),
 						"PGPASSWORD=" + environment.getPassword(),
 						"psql",
-						"-q",
 						"-wU", environment.getUsername(),
 						"-h", environment.getHostname(),
 						environment.getDatabase(),
@@ -209,7 +203,6 @@ public class PostgresDialect implements Dialect {
 			} else {
 				builder = new ProcessBuilder(
 						"psql",
-						"-q",
 						"-wU", environment.getUsername(),
 						"-h", environment.getHostname(),
 						environment.getDatabase(),
